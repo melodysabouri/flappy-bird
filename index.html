@@ -1,0 +1,96 @@
+<canvas id="canvas" width="800" height="600"></canvas>
+<div id="score">This is where the score goes</div>
+<style>
+    #canvas {
+        border: 1px solid black;
+    }
+</style>
+<script>
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const scoreElement = document.getElementById("score");
+    let score = 0;
+
+    // flappy variables
+    let y = 100;
+    let velocity = 1;
+
+    //pipe variables
+    let pipeX = 200;
+    let holeY = Math.random() * 500;
+
+    let isGameRunning = true;
+
+    function update(){
+        y = y + velocity;
+        velocity = velocity + 0.1;
+
+        pipeX -= 1;
+
+        if (pipeX < 0) {
+            scoreElement.textContent = ++score;
+
+            pipeX = 200;
+        }
+
+        if (doesIntersect ()) {
+            // lose logic
+            isGameRunning = false;
+            alert("you lose, your score was: " + score);
+
+        }
+        if (y < 0 || y > 600){
+            isGameRunning = false;
+            alert("you lose, your score was: " + score);
+        }
+    }
+    function draw (){
+        ctx.fillRect(100, y, 20, 20);
+        ctx.fillRect(pipeX, 0, 5, holeY);
+        ctx.fillRect(pipeX, holeY + 100, 5, 600 - holeY - 100);
+    }
+    function clear (){
+        ctx.clearRect(0,0,800,600);
+    }
+
+    function frame () {
+        if (isGameRunning) {
+            clear();
+            update();
+            draw();
+        }
+    }
+
+    function onKeyPress(e) {
+        console.log(e.keyCode);
+
+        if (e.keyCode == 32); {
+            velocity = -5;
+        }
+
+    }
+
+    function doesIntersect() {
+        let int1 = isPointInRectangle(100, y, pipeX, 0, 5, holeY);
+        let int2 = isPointInRectangle(100, y, pipeX, holeY + 100, 5, 600 - holeY - 100);
+
+        return int1 || int2;
+
+    }
+
+    function isPointInRectangle (px, py, rx, ry, width, height) {
+        if (px > rx && px < rx + width) {
+            if  (py > ry && py < ry + height) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    document.addEventListener("keypress", onKeyPress);
+
+    setInterval(frame, 1000 / 60);
