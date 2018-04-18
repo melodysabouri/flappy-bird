@@ -3,4 +3,4 @@ A lo-fi flappy bird
 
 One of my first projects! 
 
-Used HTML5 and JavaScript in WebStorm.
+Created using HTML5 and JavaScript in WebStorm.
